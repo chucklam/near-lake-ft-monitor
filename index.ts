@@ -1,3 +1,5 @@
+#!/usr/bin/env ts-node
+
 import { startStream, types } from 'near-lake-framework';
 
 const lakeConfig: types.LakeConfig = {
@@ -6,8 +8,11 @@ const lakeConfig: types.LakeConfig = {
   startBlockHeight: 63804051,
 };
 
-async function handleStreamerMessage(streamerMessage: types.StreamerMessage): Promise<void> {
-  console.log(`Block #${streamerMessage.block.header.height} Shards: ${streamerMessage.shards.length}`);
+async function handleStreamerMessage(
+  streamerMessage: types.StreamerMessage
+): Promise<void> {
+  const blockHeader = streamerMessage.block.header;
+  console.log(`Block #${blockHeader.height}`);
 }
 
 (async () => {
