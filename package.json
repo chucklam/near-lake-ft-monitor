@@ -10,6 +10,7 @@
     "near-lake-framework": "^1.0.1"
   },
   "devDependencies": {
+    "@tsconfig/node18": "^1.0.1",
     "@types/node": "^18.11.9",
     "ts-node": "^10.9.1",
     "tslib": "^2.4.1",
