@@ -19,13 +19,11 @@ async function handleStreamerMessage(
   streamerMessage: types.StreamerMessage
 ): Promise<void> {
   const blockHeader = streamerMessage.block.header;
-  console.log(`Block #${blockHeader.height}`);
 
   // Collect Receipts and ExecutionOutcomes from StreamerMessage
   const receiptExecutionOutcomes = streamerMessage
     .shards
     .flatMap(shard => shard.receiptExecutionOutcomes);
-  console.log(receiptExecutionOutcomes);
 
   // Extract Outcomes with Event
   const outcomesWithEvents = receiptExecutionOutcomes
@@ -56,7 +54,9 @@ async function handleStreamerMessage(
       )
     );
 
-  relevantOutcomes.length && console.dir(relevantOutcomes, { depth: 10 });
+  if (relevantOutcomes.length > 0) {
+    relevantOutcomes.forEach(outcome => console.dir(outcome, { depth: 5 }));
+  }
 }
 
 (async () => {
