@@ -27,7 +27,8 @@ async function handleStreamerMessage(
     .flatMap(shard => shard.receiptExecutionOutcomes);
   console.log(receiptExecutionOutcomes);
 
-  const relevantOutcomes = receiptExecutionOutcomes
+  // Extract Outcomes with Event
+  const outcomesWithEvents = receiptExecutionOutcomes
     .map(outcome => ({
       receipt: {
         id: outcome.receipt?.receiptId,
@@ -45,9 +46,13 @@ async function handleStreamerMessage(
       )
       .filter(event => event !== undefined)
     }))
-    .filter(relevantOutcome =>
-      relevantOutcome.events.some(
-        event => event?.standard === "nep171" && event.event === "nft_mint"
+  
+  // Filter for relevant events
+  const relevantOutcomes = outcomesWithEvents
+    .filter(outcome =>
+      outcome.events.some(
+        // event => event?.standard === "nep171" && event.event === "nft_mint"
+        event => event?.standard === 'nep141' && event.event === 'ft_transfer'
       )
     );
 
