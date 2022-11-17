@@ -9,9 +9,9 @@ const lakeConfig: types.LakeConfig = {
 };
 
 interface EventLogData {
-  standard: string,
-  version: string,
-  event: string,
+  standard: string, // 'nep141'
+  version: string,  // '1.0.0'
+  event: string,    // 'ft_transfer'
   data?: unknown,
 };
 
@@ -19,6 +19,7 @@ async function handleStreamerMessage(
   streamerMessage: types.StreamerMessage
 ): Promise<void> {
   const blockHeader = streamerMessage.block.header;
+  const createdOn = new Date(blockHeader.timestamp / 1000000);
 
   // Collect Receipts and ExecutionOutcomes from StreamerMessage
   const receiptExecutionOutcomes = streamerMessage
@@ -28,6 +29,7 @@ async function handleStreamerMessage(
   // Extract Outcomes with Event
   const outcomesWithEvents = receiptExecutionOutcomes
     .map(outcome => ({
+      createdOn,
       receipt: {
         id: outcome.receipt?.receiptId,
         receiverId: outcome.receipt?.receiverId,
