@@ -8,9 +8,11 @@ const lakeConfig: types.LakeConfig = {
   startBlockHeight: 78648779,
 };
 
-// USDC contract
-const contractAddress =
-  'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near';
+const filter = {
+  // USDC contract
+  contractAddress: 'a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.factory.bridge.near',
+  methodName: 'ft_transfer',
+}
 
 const decodeBase64 = (base64: string): string => {
   const buff = Buffer.from(base64, 'base64');
@@ -55,14 +57,18 @@ async function handleStreamerMessage(
   const createdOn = new Date(blockHeader.timestamp / 1000000);
   
   const blockHeight = blockHeader.height;
-  if (blockHeight > 78648779) process.exit();
+  // if (blockHeight > 78648779) process.exit();
 
   const txs = streamerMessage
     .shards
     .flatMap(shard => shard.chunk?.transactions);
 
   const relevantTxs = txs
-    .filter(tx => tx?.transaction.receiverId === contractAddress)
+    .filter(tx => tx?.transaction.receiverId === filter.contractAddress)
+    .filter(tx => tx?.transaction.actions.some(action => (
+      isFunctionCallAction(action)
+      && action.FunctionCall.methodName === filter.methodName
+    )))
     .map(tx => tx && decodeTx(tx));
 
   if (relevantTxs.length > 0) {
