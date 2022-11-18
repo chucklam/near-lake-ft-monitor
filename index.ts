@@ -54,9 +54,9 @@ async function handleStreamerMessage(
   streamerMessage: types.StreamerMessage
 ): Promise<void> {
   const blockHeader = streamerMessage.block.header;
-  const createdOn = new Date(blockHeader.timestamp / 1000000);
+  // const createdOn = new Date(blockHeader.timestamp / 1000000);
   
-  const blockHeight = blockHeader.height;
+  // const blockHeight = blockHeader.height;
   // if (blockHeight > 78648779) process.exit();
 
   const txs = streamerMessage
@@ -69,11 +69,24 @@ async function handleStreamerMessage(
       isFunctionCallAction(action)
       && action.FunctionCall.methodName === filter.methodName
     )))
+    // Decode the arguments of the method call now that we know it's the right method
     .map(tx => tx && decodeTx(tx));
 
-  if (relevantTxs.length > 0) {
-    relevantTxs.forEach(tx => console.dir(tx, { depth: 6 }));
-  }
+  // Logging
+  relevantTxs.forEach(tx => {
+    // console.dir(tx, { depth: 6 });
+
+    tx?.transaction.actions.forEach(action => {
+      if (isFunctionCallAction(action) && action.FunctionCall.arguments
+        && ('amount' in action.FunctionCall.arguments)
+        && ('receiver_id' in action.FunctionCall.arguments)
+      ) {
+        const { amount, receiver_id } = action.FunctionCall.arguments;
+        const usdc = parseFloat(amount) / (10**6);
+        console.log(`${tx.transaction.signerId} sent ${usdc} USDC to ${receiver_id}`);
+      }
+    })
+  });
 }
 
 (async () => {
