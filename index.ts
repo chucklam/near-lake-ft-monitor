@@ -5,7 +5,7 @@ import { startStream, types } from 'near-lake-framework';
 const lakeConfig: types.LakeConfig = {
   s3BucketName: "near-lake-data-mainnet",
   s3RegionName: "eu-central-1",
-  startBlockHeight: 78648779,
+  startBlockHeight: 78792370,
 };
 
 const filter = {
@@ -54,10 +54,10 @@ async function handleStreamerMessage(
   streamerMessage: types.StreamerMessage
 ): Promise<void> {
   const blockHeader = streamerMessage.block.header;
-  // const createdOn = new Date(blockHeader.timestamp / 1000000);
+  const createdOn = new Date(blockHeader.timestamp / 1000000);
   
-  // const blockHeight = blockHeader.height;
-  // if (blockHeight > 78648779) process.exit();
+  const blockHeight = blockHeader.height;
+  console.log(`Block Height: ${blockHeight}`);
 
   const txs = streamerMessage
     .shards
@@ -83,7 +83,10 @@ async function handleStreamerMessage(
       ) {
         const { amount, receiver_id } = action.FunctionCall.arguments;
         const usdc = parseFloat(amount) / (10**6);
-        console.log(`${tx.transaction.signerId} sent ${usdc} USDC to ${receiver_id}`);
+        console.log(
+          `${tx.transaction.signerId} sent ${usdc} USDC to ${receiver_id} ` +
+          `on ${createdOn.toLocaleString()}`
+        );
       }
     })
   });
