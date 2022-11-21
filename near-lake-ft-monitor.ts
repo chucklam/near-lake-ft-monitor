@@ -3,10 +3,15 @@
 import { startStream, types } from 'near-lake-framework';
 const chalk = require('chalk');
 
+let startBlockHeight = 78954000;
+if (process.argv.length > 2) {
+  startBlockHeight = parseInt(process.argv[2]);
+}
+
 const lakeConfig: types.LakeConfig = {
   s3BucketName: "near-lake-data-mainnet",
   s3RegionName: "eu-central-1",
-  startBlockHeight: 78954000,
+  startBlockHeight,
 };
 
 const filter = {
