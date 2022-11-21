@@ -1,11 +1,12 @@
 #!/usr/bin/env ts-node
 
 import { startStream, types } from 'near-lake-framework';
+const chalk = require('chalk');
 
 const lakeConfig: types.LakeConfig = {
   s3BucketName: "near-lake-data-mainnet",
   s3RegionName: "eu-central-1",
-  startBlockHeight: 78792370,
+  startBlockHeight: 78954000,
 };
 
 const filter = {
@@ -84,8 +85,9 @@ async function handleStreamerMessage(
         const { amount, receiver_id } = action.FunctionCall.arguments;
         const usdc = parseFloat(amount) / (10**6);
         console.log(
-          `${tx.transaction.signerId} sent ${usdc} USDC to ${receiver_id} ` +
-          `on ${createdOn.toLocaleString()}`
+          `${chalk.red.bold(receiver_id)} received ` +
+          `${chalk.green.bold(usdc)} USDC ` +
+          `from ${tx.transaction.signerId} on ${createdOn.toLocaleString()}`
         );
       }
     })

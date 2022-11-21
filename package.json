@@ -7,6 +7,7 @@
     "start": "ts-node index.ts"
   },
   "dependencies": {
+    "chalk": "^4.1.2",
     "near-api-js": "^1.1.0",
     "near-lake-framework": "^1.0.1",
     "near-seed-phrase": "^0.2.0"
